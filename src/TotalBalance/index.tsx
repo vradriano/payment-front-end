@@ -8,7 +8,7 @@ import { styles } from './styles'
 
 export function TotalBalance() {
   return (
-    <Grid item xs={4}> 
+    <Grid item> 
       <Card sx={styles.cardContainer} elevation={5}>
         <CardContent sx={styles.cardWrapper}>
           <Typography sx={styles.balanceTitle} color="text.secondary" gutterBottom>
