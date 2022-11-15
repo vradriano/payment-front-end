@@ -1,5 +1,5 @@
 import { Button, Container, Box, Paper, FormControl, Input, InputLabel, Typography } from "@mui/material"
-import { Header } from "../../src/Header"
+import { Header } from "../../src/Components/Header"
 import { styles } from "./styles"
 
 const SignUp = () => {
@@ -20,8 +20,8 @@ const SignUp = () => {
           </Typography>
 
           <FormControl fullWidth>
-          <InputLabel
-            sx={styles.inputText}
+            <InputLabel
+              sx={styles.inputText}
             >
               Username
             </InputLabel>

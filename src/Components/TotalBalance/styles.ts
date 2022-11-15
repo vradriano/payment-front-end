@@ -1,8 +1,8 @@
 export const styles = {
   cardContainer: {
+    marginTop: 6,
     minWidth: 275,
-    height: 240,
-    margin: '0 auto', 
+    height: 160,
     justifyContent: 'center' 
   },
   cardWrapper: { 
@@ -13,7 +13,7 @@ export const styles = {
   },
   balanceTitle: { 
     fontSize: 16, 
-    marginTop: 7, 
+    marginTop: 2, 
     marginBottom: 1 
   },
   sumValue: {

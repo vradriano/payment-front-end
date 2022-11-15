@@ -4,6 +4,7 @@ import {
   CardContent,
   Card
 } from '@mui/material'
+import { CurrencyFormat } from '../../services/currencyFormat';
 import { styles } from './styles'
 
 export function TotalBalance() {
@@ -15,7 +16,7 @@ export function TotalBalance() {
             Balanço
           </Typography>
           <Typography variant="h5" component="div" sx={styles.sumValue} >
-            R$: 1500
+            {CurrencyFormat(1500)}
           </Typography>
           <Typography variant="caption" color="text.secondary">
             *Saldo atual

@@ -4,7 +4,8 @@ import {
   Card,
   FormControl,
   Input,
-  InputLabel
+  InputLabel,
+  Button
 } from '@mui/material'
 import { styles } from './styles'
 
@@ -12,8 +13,6 @@ export function TransferComponent() {
   return (
     <Grid item> 
       <Card elevation={5} sx={styles.cardWrapper}>
-        <Typography variant="h5">Transferir valores</Typography>
-        
         <FormControl fullWidth sx={styles.formControlWrapper}>
           <Typography
           >
@@ -22,6 +21,7 @@ export function TransferComponent() {
           <Input
             name="username"
             type="text"
+            sx={styles.inputStyles}
             onChange={() => {}}
           />
         </FormControl>
@@ -34,9 +34,12 @@ export function TransferComponent() {
           <Input
             name="password"
             type="number"
+            sx={styles.inputStyles}
             onChange={() => {}}
           />
         </FormControl>
+
+        <Button variant="contained" sx={styles.sendTransferButton}>Enviar</Button>
       </Card>
     </Grid>
   );
