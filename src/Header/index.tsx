@@ -3,20 +3,30 @@ import {
   Box,
   Toolbar,
   Typography,
+  Container,
   Button
 } from '@mui/material'
 import { styles } from './styles'
+import Link from 'next/link'
 
 export function Header() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={styles.header}>
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Ng.cash
-          </Typography>
-          <Button color="inherit">Login</Button>
-        </Toolbar>
+        <Container maxWidth="xl" >
+          <Toolbar>
+            <Typography variant="h6" component="div" sx={styles.logoTitle}>
+              NG.CASH
+            </Typography>
+            <Link href="/signin">
+              <Button sx={styles.redirectLink}>Login</Button>
+            </Link>
+            
+            <Link href="/signup">
+              <Button sx={styles.redirectLink}>Cadastrar</Button>
+            </Link>
+          </Toolbar>
+        </Container>
       </AppBar>
     </Box>
   );
