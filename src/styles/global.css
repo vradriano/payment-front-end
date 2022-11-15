@@ -16,13 +16,8 @@
   }
 }
 
-:root {
-  --white: #FFFFFF;
-  --black: #000000;
-}
-
 body {
-  background: rgb(255, 255, 255);
+  background: rgb(226, 223, 223);
   color: var(--black);
 }
 
