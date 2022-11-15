@@ -2,7 +2,7 @@ import { Button, Container, Box, Paper, FormControl, Input, InputLabel, Typograp
 import { Header } from "../../src/Header"
 import { styles } from "./styles"
 
-const SignUp = () => {
+const SignIn = () => {
   return (
     <Box>
       <Header />
@@ -16,7 +16,7 @@ const SignUp = () => {
             variant="h5" 
             sx={styles.title}
           >
-            Cadastre-se
+            Entre na sua conta
           </Typography>
 
           <FormControl fullWidth>
@@ -54,7 +54,7 @@ const SignUp = () => {
             color="primary"
             sx={styles.buttonStyles}
           >
-            Cadastrar
+            Entrar
           </Button>
         </Paper>
       </Container>
@@ -62,4 +62,4 @@ const SignUp = () => {
   )
 }
 
-export default SignUp
+export default SignIn
