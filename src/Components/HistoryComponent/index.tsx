@@ -1,12 +1,16 @@
 import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  tableCellClasses,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  styled
+} from '@mui/material'
+
 import { CurrencyFormat } from '../../services/currencyFormat';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -37,6 +41,7 @@ export function HistoryComponent() {
           <TableRow>
             <StyledTableCell>Username</StyledTableCell>
             <StyledTableCell align="right">Valor transferido</StyledTableCell>
+            <StyledTableCell align="right">Data da transferência</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -45,6 +50,7 @@ export function HistoryComponent() {
               vradriano
             </StyledTableCell>
             <StyledTableCell align="right">{CurrencyFormat(1500)}</StyledTableCell>
+            <StyledTableCell align="right">15/11/2022</StyledTableCell>
           </StyledTableRow>
         </TableBody>
       </Table>
