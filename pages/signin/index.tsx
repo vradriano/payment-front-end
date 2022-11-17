@@ -1,8 +1,42 @@
-import { Button, Container, Box, Paper, FormControl, Input, InputLabel, Typography } from "@mui/material"
+import {
+  Button,
+  Container,
+  Box,
+  Paper,
+  FormControl,
+  Input,
+  InputLabel,
+  Typography
+} from "@mui/material"
+import { useState, SyntheticEvent, useContext } from "react"
+import { AuthContext } from '../../src/contexts/AuthContext'
 import { Header } from "../../src/Components/Header"
 import { styles } from "./styles"
 
 const SignIn = () => {
+  const { signIn } = useContext(AuthContext)
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+
+  function handleChangeUsername(username: string) {
+    setUsername(username)
+  }
+
+  function handleChangePassword(password: string) {
+    setPassword(password)
+  }
+
+  async function handleLogin(event: SyntheticEvent) {
+    event.preventDefault()
+
+    const data = {
+      username,
+      password
+    }
+
+    signIn(data)
+  }
+
   return (
     <Box>
       <Header />
@@ -19,43 +53,45 @@ const SignIn = () => {
             Entre na sua conta
           </Typography>
 
-          <FormControl fullWidth>
-          <InputLabel
-            sx={styles.inputText}
-            >
-              Username
-            </InputLabel>
-            <Input
-              name="username"
-              type="text"
-              onChange={() => {}}
-              sx={styles.inputStyles}
-            />
-          </FormControl>
+          <form onSubmit={handleLogin}>
+            <FormControl fullWidth>
+              <InputLabel
+                sx={styles.inputText}
+              >
+                Username
+              </InputLabel>
+              <Input
+                name="username"
+                type="text"
+                onChange={(e) => handleChangeUsername(e.target.value)}
+                sx={styles.inputStyles}
+              />
+            </FormControl>
 
-          <FormControl fullWidth sx={{ mt: 4 }}>
-            <InputLabel
-              sx={styles.inputText}
-            >
-              Senha
-            </InputLabel>
-            <Input
-              name="password"
-              type="password"
-              onChange={() => {}}
-              sx={styles.inputStyles}
-            />
-          </FormControl>
+            <FormControl fullWidth sx={{ mt: 4 }}>
+              <InputLabel
+                sx={styles.inputText}
+              >
+                Senha
+              </InputLabel>
+              <Input
+                name="password"
+                type="password"
+                onChange={(e) => handleChangePassword(e.target.value)}
+                sx={styles.inputStyles}
+              />
+            </FormControl>
 
-          <Button
-            fullWidth
-            type="submit"
-            variant="contained"
-            color="primary"
-            sx={styles.buttonStyles}
-          >
-            Entrar
-          </Button>
+            <Button
+              fullWidth
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={styles.buttonStyles}
+            >
+              Entrar
+            </Button>
+          </form>
         </Paper>
       </Container>
     </Box>
