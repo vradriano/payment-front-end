@@ -1,9 +1,8 @@
-import { createContext, ReactNode,  useState } from "react";
+import { createContext, ReactNode, useState, useEffect } from "react";
 
 import Router from 'next/router'
-import { setCookie } from 'nookies'
+import { setCookie, parseCookies, destroyCookie } from 'nookies'
 import { api } from "../services/axios";
-
 
 type User = {
   username: string;
@@ -16,6 +15,7 @@ type SignInCredentials = {
 
 type AuthContextData = {
   signIn: (credentials: SignInCredentials) => Promise<void>;
+  signOut: () => void;
   user?: User;
   isAuthenticated: boolean;
 }
@@ -27,9 +27,35 @@ type AuthProviderProps = {
 export const AuthContext = createContext({} as AuthContextData)
 
 
+export function signOut() {
+  destroyCookie(undefined, 'auth.token')
+  
+  Router.push('/')
+}
+
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User>()
   const isAuthenticated = !!user;
+
+  useEffect(() => {
+    const { 'auth.token': token } = parseCookies()
+
+    if (token) {
+      api.get('/users/getSession', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }).then(response => {
+        const { username } = response.data 
+        setUser({ username })
+      })
+      .catch(() => {
+        destroyCookie(undefined, 'auth.token')
+
+        Router.push('/')
+      })
+    }
+  }, [])
 
   async function signIn({ username, password }: SignInCredentials) {
     try {
@@ -59,10 +85,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
 
   }
-
-
+  
   return (
-    <AuthContext.Provider value={{ signIn, isAuthenticated, user }} >
+    <AuthContext.Provider value={{ signIn, signOut, isAuthenticated, user }} >
     {children}
     </AuthContext.Provider>
   )

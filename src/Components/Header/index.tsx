@@ -6,11 +6,13 @@ import {
   Container,
   Button
 } from '@mui/material'
+import { useContext } from "react"
+import { AuthContext } from "../../contexts/AuthContext"
 import { styles } from './styles'
 import Link from 'next/link'
 
 export function Header() {
-  const hasSession = false
+  const { user, signOut } = useContext(AuthContext)
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -22,7 +24,7 @@ export function Header() {
             </Typography>
 
             {
-              !hasSession ? (
+              !user ? (
                 <>
                   <Link href="/signin">
                     <Button sx={styles.redirectLink}>Login</Button>
@@ -34,9 +36,14 @@ export function Header() {
                 </>
               ) : (
                 <>
-                  <Link href="/">
-                    <Button sx={styles.redirectLink}>Deslogar</Button>
-                  </Link>
+                  <Typography sx={styles.userTitle}>
+                    Bem vindo, {user.username}
+                  </Typography>
+                    <p>
+                    |
+                    </p>
+                  
+                  <Button sx={styles.redirectLink} onClick={signOut}>SignOut</Button>
                 </>
               )
             }

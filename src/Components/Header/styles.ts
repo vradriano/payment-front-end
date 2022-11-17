@@ -11,8 +11,16 @@ export const styles = {
     fontSize: 28,
     fontFamily: 'Roboto'
   },
+  userTitle: { 
+    textTransform: 'none',
+    mr: 1.5, 
+    fontWeight: 600, 
+    fontSize: 16, 
+    color: theme.palette.primary.light 
+  },
   redirectLink: { 
-    textTransform: 'none', 
+    textTransform: 'none',
+    ml: 1, 
     fontWeight: 600, 
     fontSize: 16, 
     color: theme.palette.primary.light 
