@@ -12,6 +12,7 @@ import {
 } from '@mui/material'
 
 import { CurrencyFormat } from '../../services/currencyFormat';
+import { DateFormat } from '../../services/dateFormat';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -27,31 +28,46 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.action.hover,
   },
-  // hide last border
   '&:last-child td, &:last-child th': {
     border: 0,
   },
 }));
 
-export function HistoryComponent() {
+
+export function HistoryComponent({transactionsHistoryData}: any) {
+
   return (
     <TableContainer sx={{ mt: 3}} component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead>
           <TableRow>
-            <StyledTableCell>Username</StyledTableCell>
-            <StyledTableCell align="right">Valor transferido</StyledTableCell>
+            <StyledTableCell>Usuário</StyledTableCell>
+            <StyledTableCell align="right">Conta débitada</StyledTableCell>
+            <StyledTableCell align="right">Conta creditada</StyledTableCell>
+            <StyledTableCell align="right">Valor da transferência</StyledTableCell>
             <StyledTableCell align="right">Data da transferência</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          <StyledTableRow>
-            <StyledTableCell component="th" scope="row">
-              vradriano
-            </StyledTableCell>
-            <StyledTableCell align="right">{CurrencyFormat(1500)}</StyledTableCell>
-            <StyledTableCell align="right">15/11/2022</StyledTableCell>
-          </StyledTableRow>
+          {
+            transactionsHistoryData.map((transaction: any) => {
+              console.log(transaction, 'transação')
+              return (
+                <>
+                  <StyledTableRow>
+                    <StyledTableCell component="th" scope="row">
+                      vradriano
+                    </StyledTableCell>
+                    <StyledTableCell align="right">{transaction.debitedAccountId}</StyledTableCell>
+                    <StyledTableCell align="right">{transaction.creditedAccountId}</StyledTableCell>
+                    <StyledTableCell align="right">{CurrencyFormat(transaction.value)}</StyledTableCell>
+                    <StyledTableCell align="right">{DateFormat(transaction.createdAt)}</StyledTableCell>
+                  </StyledTableRow>
+                </>
+              )
+            })
+          }
+        
         </TableBody>
       </Table>
     </TableContainer>

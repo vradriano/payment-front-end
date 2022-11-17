@@ -31,7 +31,7 @@ export function Header() {
                   </Link>
                   
                   <Link href="/signup">
-                    <Button sx={styles.redirectLink}>Cadastrar</Button>
+                    <Button sx={styles.redirectLink}>Signup</Button>
                   </Link>
                 </>
               ) : (
@@ -42,8 +42,7 @@ export function Header() {
                     <p>
                     |
                     </p>
-                  
-                  <Button sx={styles.redirectLink} onClick={signOut}>SignOut</Button>
+                  <Button sx={styles.redirectLink} onClick={signOut}>Log-out</Button>
                 </>
               )
             }

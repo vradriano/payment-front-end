@@ -6,10 +6,13 @@ export const styles = {
     margin: '0 auto', 
     display: 'flex', 
     alignItems: 'center', 
+    width: '100%',
     height: 'calc(100vh - 70px)' 
   },
   paperWrapper: {
-    padding: 5
+    padding: 5,
+    width: '50%',
+
   },
   title: { 
     fontWeight: 600, 
@@ -38,5 +41,8 @@ export const styles = {
       backgroundColor: theme.palette.primary.main,
       opacity: '0.96'
     }
+  },
+  helperText: {
+    color: 'red'
   }
 }

@@ -7,7 +7,9 @@ import {
 import { CurrencyFormat } from '../../services/currencyFormat';
 import { styles } from './styles'
 
-export function TotalBalance() {
+export function TotalBalance({userBalance}: any) {
+
+  console.log(userBalance, 'user')
   return (
     <Grid item> 
       <Card sx={styles.cardContainer} elevation={5}>
@@ -16,7 +18,7 @@ export function TotalBalance() {
             Balanço
           </Typography>
           <Typography variant="h5" component="div" sx={styles.sumValue} >
-            {CurrencyFormat(1500)}
+            {CurrencyFormat(userBalance.balance)}
           </Typography>
           <Typography variant="caption" color="text.secondary">
             *Saldo atual
