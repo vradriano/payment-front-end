@@ -114,6 +114,7 @@ const SignUp = () => {
               <Input
                 name="username"
                 type="text"
+                value={username}
                 onChange={(e) => handleChangeUsername(e.target.value)}
                 sx={styles.inputStyles}
               />
@@ -131,6 +132,7 @@ const SignUp = () => {
               <Input
                 name="password"
                 type="password"
+                value={password}
                 onChange={(e) => handleChangePassword(e.target.value)}
                 sx={styles.inputStyles}
               />

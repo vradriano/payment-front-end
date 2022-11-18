@@ -1,14 +1,43 @@
 import nookies from 'nookies'
 import { GetServerSidePropsContext } from "next"
 import { Header } from '../src/Components/Header'
-import { Box, Container, Grid, Typography, Card } from '@mui/material'
+import { Box, Container, Grid, Typography } from '@mui/material'
 import { TotalBalance } from '../src/Components/TotalBalance'
 import { TransferComponent } from '../src/Components/TransferComponent'
 import { HistoryComponent } from '../src/Components/HistoryComponent'
 import { FilterComponent } from '../src/Components/FilterComponent'
 import { api } from '../src/services/axios'
+import { useState } from 'react'
 
-export default function Home({ transactionsHistoryData, userBalance }: any) {
+interface TransactionsProps {
+  id: number;
+  value: string;
+  debitedAccountId: number;
+  creditedAccountId: number;
+  createdAt: string;
+}
+
+interface BalanceProps {
+  id: number;
+  balance: number;
+}
+
+interface Props {
+  transactionsHistoryData: TransactionsProps;
+  userBalance: BalanceProps;
+}
+
+export default function Home({ transactionsHistoryData, userBalance }: Props) {
+  const [transactions, setTransactions] = useState<any | null>(transactionsHistoryData)
+  const [userAmount, setUserAmount] = useState(userBalance.balance)
+
+  function handleAddTransactions(newTransaction: TransactionsProps) {
+    setTransactions((prevProps: TransactionsProps[]) => [...prevProps, newTransaction])
+  } 
+
+  function handleSumTransactions(newBalance: number) {
+    setUserAmount(newBalance)
+  } 
 
   return (
     <Box>
@@ -21,19 +50,30 @@ export default function Home({ transactionsHistoryData, userBalance }: any) {
                 <Typography variant="h5" sx={{ mb: 2, fontWeight: 600, fontFamily: 'Roboto'}}>
                   Transferir valores
                 </Typography>
-                <TransferComponent />
+
+                <TransferComponent
+                  actualBalance={userAmount} 
+                  onHandleSumTransactions={handleSumTransactions}
+                  onHandleAddTransactions={handleAddTransactions}
+                />
               </Box>
 
               <Box>
                 <Typography variant="h5" sx={{ mt: 3, mb: -2, fontWeight: 600, fontFamily: 'Roboto'}}>
                   Histórico de transações
                 </Typography>
-                <HistoryComponent transactionsHistoryData={transactionsHistoryData}  />
+
+                <HistoryComponent 
+                  transactionsHistoryData={transactions}  
+                />
               </Box>
             </Grid>
 
             <Grid item xs={12} md={3}> 
-              <TotalBalance userBalance={userBalance} />
+              <TotalBalance 
+                onHandleSumTransactions={handleSumTransactions}
+                userBalance={userAmount} 
+              />
 
               <Box>
                 <Typography variant="h5" sx={{ mt: 3, mb: -2, fontWeight: 600, fontFamily: 'Roboto'}}>

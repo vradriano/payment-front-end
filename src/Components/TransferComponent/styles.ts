@@ -25,5 +25,8 @@ export const styles = {
       backgroundColor: theme.palette.primary.main,
       opacity: '0.95'
     }
+  },
+  helperText: {
+    color: 'red'
   }
 }

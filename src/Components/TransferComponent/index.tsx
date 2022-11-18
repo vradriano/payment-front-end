@@ -3,16 +3,157 @@ import {
   Grid,
   Card,
   FormControl,
+  FormHelperText,
   Input,
-  InputLabel,
   Button
 } from '@mui/material'
+import { CurrencyFormat } from '../../services/currencyFormat'
+import { api } from '../../services/axios'
+import { AuthContext } from "../../contexts/AuthContext"
+import { SyntheticEvent, useState, useContext } from 'react'
+import { parseCookies } from 'nookies'
 import { styles } from './styles'
 
-export function TransferComponent() {
+interface ErrorProps {
+  type: string;
+  error: boolean;
+  message: string;
+}
+
+interface TransactionsProps {
+  id: number;
+  value: string;
+  debitedAccountId: number;
+  creditedAccountId: number;
+  createdAt: string;
+}
+
+interface Props {
+  actualBalance: number;
+  onHandleSumTransactions: (actualSum: number) => void;
+  onHandleAddTransactions: (transactions: TransactionsProps) => void;
+}
+
+export function TransferComponent({
+  actualBalance,
+  onHandleSumTransactions,
+  onHandleAddTransactions
+}: Props) {
+  const [username, setUsername] = useState('')
+  const [amount, setAmount] = useState(0)
+  const [hasAmountError, setHasAmountError] = useState<ErrorProps>({
+    type: '',
+    error: false,
+    message: ''
+  })
+  const { user } = useContext(AuthContext)
+  const { 'auth.token': token } = parseCookies()
+
+  function handleChangeUsername(username: string) {
+
+    setUsername(username)
+  }
+
+  function handleChangeAmount(amount: number) {
+    if(hasAmountError.type === 'insufficientFundsToTransfer') {
+      setHasAmountError({
+        type: '',
+        error: false,
+        message: ''
+      })
+    }
+
+    setAmount(amount)
+  }
+
+  function handleResponseError(errorStatus: number) {
+    switch(errorStatus) {
+      case 200:
+        const actualSum = actualBalance! - amount
+        onHandleSumTransactions(actualSum)
+        setUsername('')
+        setAmount(0)
+      break;
+      case 400: 
+        setHasAmountError({
+          type: 'insufficientFundsToTransfer',
+          error: true,
+          message: 'O valor a ser transferido é maior que o saldo bancário!'
+        })
+      break;
+      case 401: 
+        setHasAmountError({
+          type: 'InvalidUser',
+          error: true,
+          message: 'O usuário de destino não existe. Por favor, informe um usuário válido!'
+        })
+      break;
+      default:
+        break;
+    }
+  }
+  
+  async function handleTransferAmount(event: SyntheticEvent) {
+    if(username === user?.username) {
+      setHasAmountError({
+        type: 'sameAccount',
+        error: true,
+        message: 'Você não pode transferir para si mesmo.'
+      })
+
+      return
+    }
+
+    if(amount === 0) {
+      setHasAmountError({
+        type: 'insufficientFundsToTransfer',
+        error: true,
+        message: 'Não há o que transferir!'
+      })
+
+      return
+    }
+
+    await api.post('/transactions/create', {
+      id: user!.id,
+      username,
+      value: amount
+    }, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }}).then(res => {
+      const actualSum = actualBalance! - amount
+      onHandleSumTransactions(actualSum)
+      setUsername('')
+      setAmount(0)
+
+      const { id, debitedAccountId, creditedAccountId, value, createdAt } = res.data 
+
+      onHandleAddTransactions({
+        id,
+        debitedAccountId,
+        creditedAccountId,
+        value,
+        createdAt
+      })
+
+      if(hasAmountError) {
+        setHasAmountError({
+          type: '',
+          error: false,
+          message: ''
+        })
+      }
+    }).catch(err => {
+      handleResponseError(err.request.status)
+    })
+  }
+
   return (
     <Grid item> 
       <Card elevation={5} sx={styles.cardWrapper}>
+
+        <form>
         <FormControl fullWidth sx={styles.formControlWrapper}>
           <Typography
           >
@@ -21,9 +162,13 @@ export function TransferComponent() {
           <Input
             name="username"
             type="text"
+            value={username}
             sx={styles.inputStyles}
-            onChange={() => {}}
+            onChange={e => handleChangeUsername(e.target.value)}
           />
+          <FormHelperText sx={styles.helperText}>
+            {hasAmountError.error && hasAmountError.type === 'InvalidUser' || hasAmountError.type === "sameAccount" ? hasAmountError.message : null}
+          </FormHelperText>
         </FormControl>
 
         <FormControl fullWidth sx={styles.formControlWrapper}>
@@ -32,14 +177,26 @@ export function TransferComponent() {
             Valor a ser transferido:
           </Typography>
           <Input
-            name="password"
+            name="amount"
             type="number"
+            value={amount}
             sx={styles.inputStyles}
-            onChange={() => {}}
+            onChange={e => handleChangeAmount(parseInt(e.target.value))}
           />
+          <FormHelperText sx={styles.helperText}>
+            {hasAmountError.error && hasAmountError.type === 'insufficientFundsToTransfer' ? hasAmountError.message : null}
+          </FormHelperText>
         </FormControl>
 
-        <Button variant="contained" sx={styles.sendTransferButton}>Enviar</Button>
+        <Button 
+          variant="contained" 
+          disabled={!username}
+          sx={styles.sendTransferButton} 
+          onClick={handleTransferAmount}
+        >
+          Enviar
+        </Button>
+        </form>
       </Card>
     </Grid>
   );

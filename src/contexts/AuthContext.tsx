@@ -6,6 +6,7 @@ import { api } from "../services/axios";
 
 type User = {
   username: string;
+  id?: number | undefined;
 }
 
 type SignInCredentials = {
@@ -46,8 +47,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
           Authorization: `Bearer ${token}`
         }
       }).then(response => {
-        const { username } = response.data 
-        setUser({ username })
+        const { username, id } = response.data 
+        setUser({ username, id })
       })
       .catch(() => {
         destroyCookie(undefined, 'auth.token')
@@ -63,8 +64,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         username,
         password
       })
-
-      console.log(response)
 
       const { token } = response.data
 
