@@ -9,9 +9,18 @@ import {
   Input,
   Card
 } from '@mui/material'
+import { useState } from 'react'
 import { CurrencyFormat } from '../../services/currencyFormat';
 
-export function FilterComponent() {
+export function FilterComponent({ onHandleFilterByCategories }: any) {
+  const [transactionsFilter, setTransactionsFilter] = useState('')
+
+
+  function onHandleFilterTransactions(value: string) {
+    setTransactionsFilter(value)
+    onHandleFilterByCategories(value)
+  }
+
   return (
     <Grid item> 
       <Card elevation={5} sx={{ mt: 2, height: 240 }}>
@@ -19,17 +28,20 @@ export function FilterComponent() {
           <FormControl fullWidth>
             <Typography>Tipo de transação</Typography>
             <Select
+              value={transactionsFilter}
+              onChange={(e) => onHandleFilterTransactions(e.target.value)}
               name="transactionType"
               fullWidth
             >
-              <MenuItem value="CashIn">Cash-in</MenuItem>
-              <MenuItem value="CashOut">Cash-out</MenuItem>
+              <MenuItem value="Cash-In">Cash-in</MenuItem>
+              <MenuItem value="Cash-Out">Cash-out</MenuItem>
             </Select>
           </FormControl>
 
           <FormControl fullWidth sx={{ mt: 3 }}>
             <Typography>Data da transação</Typography>
             <Select
+              value={transactionsFilter}
               name="transactionType"
               fullWidth
             >

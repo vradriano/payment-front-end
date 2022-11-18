@@ -12,7 +12,7 @@ import { styles } from './styles'
 import Link from 'next/link'
 
 export function Header() {
-  const { user, signOut } = useContext(AuthContext)
+  const { user, isAuthenticated, signOut } = useContext(AuthContext)
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -24,7 +24,7 @@ export function Header() {
             </Typography>
 
             {
-              !user ? (
+              !isAuthenticated ? (
                 <>
                   <Link href="/signin">
                     <Button sx={styles.redirectLink}>Login</Button>
@@ -37,7 +37,7 @@ export function Header() {
               ) : (
                 <>
                   <Typography sx={styles.userTitle}>
-                    Bem vindo, {user.username}
+                    Bem vindo, {user!.username}
                   </Typography>
                     <p>
                     |

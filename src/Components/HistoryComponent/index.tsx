@@ -34,7 +34,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 
-export function HistoryComponent({transactionsHistoryData}: any) {
+export function HistoryComponent({ transactionsHistoryData, isUser }: any) {
 
   return (
     <TableContainer sx={{ mt: 3}} component={Paper}>
@@ -45,13 +45,14 @@ export function HistoryComponent({transactionsHistoryData}: any) {
             <StyledTableCell align="right">Conta débitada</StyledTableCell>
             <StyledTableCell align="right">Conta creditada</StyledTableCell>
             <StyledTableCell align="right">Valor da transferência</StyledTableCell>
+            <StyledTableCell align="right">Tipo da transferência</StyledTableCell>
             <StyledTableCell align="right">Data da transferência</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {
             transactionsHistoryData.map((transaction: any) => {
-              console.log(transaction, 'transação')
+
               return (
                 <>
                   <StyledTableRow>
@@ -61,6 +62,7 @@ export function HistoryComponent({transactionsHistoryData}: any) {
                     <StyledTableCell align="right">{transaction.debitedAccountId}</StyledTableCell>
                     <StyledTableCell align="right">{transaction.creditedAccountId}</StyledTableCell>
                     <StyledTableCell align="right">{CurrencyFormat(transaction.value)}</StyledTableCell>
+                    <StyledTableCell align="right">{transaction.type}</StyledTableCell>
                     <StyledTableCell align="right">{DateFormat(transaction.createdAt)}</StyledTableCell>
                   </StyledTableRow>
                 </>

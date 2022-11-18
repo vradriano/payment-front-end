@@ -6,7 +6,6 @@ import { api } from "../services/axios";
 
 type User = {
   username: string;
-  id?: number | undefined;
 }
 
 type SignInCredentials = {
@@ -27,13 +26,6 @@ type AuthProviderProps = {
 
 export const AuthContext = createContext({} as AuthContextData)
 
-
-export function signOut() {
-  destroyCookie(undefined, 'auth.token')
-  
-  Router.push('/')
-}
-
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User>()
   const isAuthenticated = !!user;
@@ -47,8 +39,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
           Authorization: `Bearer ${token}`
         }
       }).then(response => {
-        const { username, id } = response.data 
-        setUser({ username, id })
+        const { username } = response.data 
+        setUser({ username })
       })
       .catch(() => {
         destroyCookie(undefined, 'auth.token')
@@ -82,8 +74,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (err) {
       console.log(err)
     }
-
   }
+
+  
+  async function signOut() {
+    destroyCookie(undefined, 'auth.token')
+    
+    Router.push('/')
+  }
+  
   
   return (
     <AuthContext.Provider value={{ signIn, signOut, isAuthenticated, user }} >

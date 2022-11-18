@@ -15,6 +15,7 @@ interface TransactionsProps {
   debitedAccountId: number;
   creditedAccountId: number;
   createdAt: string;
+  type: 'Cash-In' | 'Cash-Out';
 }
 
 interface BalanceProps {
@@ -25,9 +26,10 @@ interface BalanceProps {
 interface Props {
   transactionsHistoryData: TransactionsProps;
   userBalance: BalanceProps;
+  isUser: number;
 }
 
-export default function Home({ transactionsHistoryData, userBalance }: Props) {
+export default function Home({ transactionsHistoryData, userBalance, isUser }: Props) {
   const [transactions, setTransactions] = useState<any | null>(transactionsHistoryData)
   const [userAmount, setUserAmount] = useState(userBalance.balance)
 
@@ -38,6 +40,14 @@ export default function Home({ transactionsHistoryData, userBalance }: Props) {
   function handleSumTransactions(newBalance: number) {
     setUserAmount(newBalance)
   } 
+
+  function handleFilterByCategories(filterType: string) {
+    const historyFormatted = transactionsHistoryData.filter((transaction: TransactionsProps) => {
+      return filterType === transaction.type
+    })
+    
+    setTransactions(historyFormatted)
+  }
 
   return (
     <Box>
@@ -52,7 +62,7 @@ export default function Home({ transactionsHistoryData, userBalance }: Props) {
                 </Typography>
 
                 <TransferComponent
-                  actualBalance={userAmount} 
+                  actualBalance={userAmount}
                   onHandleSumTransactions={handleSumTransactions}
                   onHandleAddTransactions={handleAddTransactions}
                 />
@@ -63,7 +73,8 @@ export default function Home({ transactionsHistoryData, userBalance }: Props) {
                   Histórico de transações
                 </Typography>
 
-                <HistoryComponent 
+                <HistoryComponent
+                  isUser={isUser}
                   transactionsHistoryData={transactions}  
                 />
               </Box>
@@ -80,7 +91,9 @@ export default function Home({ transactionsHistoryData, userBalance }: Props) {
                   Filtros
                 </Typography>
 
-                <FilterComponent />
+                <FilterComponent 
+                  onHandleFilterByCategories={handleFilterByCategories}
+                />
               </Box>
             </Grid>
         </Grid>
@@ -116,6 +129,14 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     }, 
   })
 
+  const transactionsFormatted = getTransactions.data.map((transaction: TransactionsProps) => {
+    return {
+      ...transaction,
+      type: transaction.debitedAccountId === id ? 'Cash-Out' : 'Cash-In'
+    }
+  })
+
+
   const getBalance = await api.get(`/${id}/accountBalance`, {
     headers: {
       Authorization: `Bearer ${token}`
@@ -124,7 +145,8 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 
   return {
     props: {
-      transactionsHistoryData: getTransactions.data,
+      isUser: id,
+      transactionsHistoryData: transactionsFormatted,
       userBalance: getBalance.data
     }
   }

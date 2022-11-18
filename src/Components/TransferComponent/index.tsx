@@ -26,6 +26,7 @@ interface TransactionsProps {
   debitedAccountId: number;
   creditedAccountId: number;
   createdAt: string;
+  type: 'Cash-In' | 'Cash-Out'
 }
 
 interface Props {
@@ -115,8 +116,8 @@ export function TransferComponent({
     }
 
     await api.post('/transactions/create', {
-      id: user!.id,
-      username,
+      userDebited: user!.username,
+      userCredited: username,
       value: amount
     }, {
     headers: {
@@ -134,7 +135,8 @@ export function TransferComponent({
         debitedAccountId,
         creditedAccountId,
         value,
-        createdAt
+        createdAt,
+        type: 'Cash-Out'
       })
 
       if(hasAmountError) {
