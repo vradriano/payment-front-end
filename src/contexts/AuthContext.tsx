@@ -1,6 +1,5 @@
-import { createContext, ReactNode, useState, useEffect } from "react";
-
 import Router from 'next/router'
+import { createContext, ReactNode, useState, useEffect } from "react";
 import { setCookie, parseCookies, destroyCookie } from 'nookies'
 import { api } from "../services/axios";
 
@@ -80,7 +79,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   async function signOut() {
     destroyCookie(undefined, 'auth.token')
     
-    Router.push('/')
+    Router.reload()
   }
   
   

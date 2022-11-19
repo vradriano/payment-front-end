@@ -9,7 +9,6 @@ import { styles } from './styles'
 
 export function TotalBalance({ userBalance }: any) {
 
-  console.log(userBalance, 'aksodpkpo')
 
   return (
     <Grid item> 

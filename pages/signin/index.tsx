@@ -8,11 +8,9 @@ import {
   InputLabel,
   Typography
 } from "@mui/material"
-import nookies from 'nookies'
-import { GetServerSidePropsContext } from "next"
 import { useState, SyntheticEvent, useContext } from "react"
 import { AuthContext } from '../../src/contexts/AuthContext'
-import { Header } from "../../src/Components/Header"
+import { Header } from "../../src/components/Header"
 import { styles } from "./styles"
 
 const SignIn = () => {
@@ -86,6 +84,7 @@ const SignIn = () => {
 
             <Button
               fullWidth
+              disabled={!username}
               type="submit"
               variant="contained"
               color="primary"

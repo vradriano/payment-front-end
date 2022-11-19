@@ -1,11 +1,11 @@
 import nookies from 'nookies'
 import { GetServerSidePropsContext } from "next"
-import { Header } from '../src/Components/Header'
+import { Header } from '../src/components/Header'
 import { Box, Container, Grid, Typography } from '@mui/material'
-import { TotalBalance } from '../src/Components/TotalBalance'
-import { TransferComponent } from '../src/Components/TransferComponent'
-import { HistoryComponent } from '../src/Components/HistoryComponent'
-import { FilterComponent } from '../src/Components/FilterComponent'
+import { TotalBalance } from '../src/components/TotalBalance'
+import { TransferComponent } from '../src/components/TransferComponent'
+import { HistoryComponent } from '../src/components/HistoryComponent'
+import { FilterComponent } from '../src/components/FilterComponent'
 import { api } from '../src/services/axios'
 import { useState } from 'react'
 
@@ -14,7 +14,7 @@ interface TransactionsProps {
   value: string;
   debitedAccountId: number;
   creditedAccountId: number;
-  createdAt: string;
+  createdAt: number;
   type: 'Cash-In' | 'Cash-Out';
 }
 
@@ -23,13 +23,18 @@ interface BalanceProps {
   balance: number;
 }
 
-interface Props {
-  transactionsHistoryData: TransactionsProps;
-  userBalance: BalanceProps;
-  isUser: number;
+interface Filters {
+  filterType: string;
+  filterDate: string;
 }
 
-export default function Home({ transactionsHistoryData, userBalance, isUser }: Props) {
+interface Props {
+  transactionsHistoryData: TransactionsProps[];
+  userBalance: BalanceProps;
+  formattedDates: string[];
+}
+
+export default function Home({ transactionsHistoryData, userBalance, formattedDates }: Props) {
   const [transactions, setTransactions] = useState<any | null>(transactionsHistoryData)
   const [userAmount, setUserAmount] = useState(userBalance.balance)
 
@@ -41,12 +46,21 @@ export default function Home({ transactionsHistoryData, userBalance, isUser }: P
     setUserAmount(newBalance)
   } 
 
-  function handleFilterByCategories(filterType: string) {
-    const historyFormatted = transactionsHistoryData.filter((transaction: TransactionsProps) => {
-      return filterType === transaction.type
+  function handleFilterByCategories(filtersParams: Filters) {
+
+    const historiesFormatted = transactionsHistoryData!.filter((transaction: TransactionsProps) => {
+      return filtersParams.filterType !== "Default" ? filtersParams.filterType === transaction.type : transaction
+    })
+
+    console.log(historiesFormatted, typeof historiesFormatted)
+
+    const dateFormatted = historiesFormatted!.filter((history: any) => {
+      return filtersParams.filterDate !== "Default" 
+      ? new Intl.DateTimeFormat('pt-BR').format(history.createdAt) === filtersParams.filterDate
+      : history
     })
     
-    setTransactions(historyFormatted)
+    setTransactions(dateFormatted)
   }
 
   return (
@@ -74,7 +88,6 @@ export default function Home({ transactionsHistoryData, userBalance, isUser }: P
                 </Typography>
 
                 <HistoryComponent
-                  isUser={isUser}
                   transactionsHistoryData={transactions}  
                 />
               </Box>
@@ -92,6 +105,7 @@ export default function Home({ transactionsHistoryData, userBalance, isUser }: P
                 </Typography>
 
                 <FilterComponent 
+                  getAllHistoriesDate={formattedDates}
                   onHandleFilterByCategories={handleFilterByCategories}
                 />
               </Box>
@@ -136,18 +150,24 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     }
   })
 
-
   const getBalance = await api.get(`/${id}/accountBalance`, {
     headers: {
       Authorization: `Bearer ${token}`
     }, 
   })
 
+  const getAllDates = getTransactions.data.map((transaction: TransactionsProps) => {
+    return new Intl.DateTimeFormat('pt-BR').format(transaction.createdAt)
+  })
+
+  const removeDuplicatesDate = getAllDates.filter((equals: any, index: any) => getAllDates.indexOf(equals) === index)
+
+
   return {
     props: {
-      isUser: id,
       transactionsHistoryData: transactionsFormatted,
-      userBalance: getBalance.data
+      userBalance: getBalance.data,
+      formattedDates: removeDuplicatesDate
     }
   }
 }

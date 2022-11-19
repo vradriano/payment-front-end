@@ -33,8 +33,20 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+interface TransactionsProps {
+  id: number;
+  value: number;
+  debitedAccountId: number;
+  creditedAccountId: number;
+  createdAt: number;
+  type: 'Cash-In' | 'Cash-Out';
+}
 
-export function HistoryComponent({ transactionsHistoryData, isUser }: any) {
+interface Props {
+  transactionsHistoryData: TransactionsProps[]
+}
+
+export function HistoryComponent({ transactionsHistoryData }: Props) {
 
   return (
     <TableContainer sx={{ mt: 3}} component={Paper}>
@@ -51,7 +63,7 @@ export function HistoryComponent({ transactionsHistoryData, isUser }: any) {
         </TableHead>
         <TableBody>
           {
-            transactionsHistoryData.map((transaction: any) => {
+            transactionsHistoryData.map((transaction: TransactionsProps) => {
 
               return (
                 <>

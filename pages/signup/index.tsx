@@ -1,7 +1,7 @@
 import { SyntheticEvent, useState } from "react"
 import { useRouter } from 'next/router'
 import { api } from "../../src/services/axios"
-import { Header } from "../../src/Components/Header"
+import { Header } from "../../src/components/Header"
 import { styles } from "./styles"
 import validator from 'validator'
 import {

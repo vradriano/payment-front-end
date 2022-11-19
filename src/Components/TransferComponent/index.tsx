@@ -7,7 +7,7 @@ import {
   Input,
   Button
 } from '@mui/material'
-import { CurrencyFormat } from '../../services/currencyFormat'
+import useToasty from "../../contexts/Toasty"
 import { api } from '../../services/axios'
 import { AuthContext } from "../../contexts/AuthContext"
 import { SyntheticEvent, useState, useContext } from 'react'
@@ -25,7 +25,7 @@ interface TransactionsProps {
   value: string;
   debitedAccountId: number;
   creditedAccountId: number;
-  createdAt: string;
+  createdAt: number;
   type: 'Cash-In' | 'Cash-Out'
 }
 
@@ -40,6 +40,7 @@ export function TransferComponent({
   onHandleSumTransactions,
   onHandleAddTransactions
 }: Props) {
+  const { setToasty } = useToasty()
   const [username, setUsername] = useState('')
   const [amount, setAmount] = useState(0)
   const [hasAmountError, setHasAmountError] = useState<ErrorProps>({
@@ -74,6 +75,11 @@ export function TransferComponent({
         onHandleSumTransactions(actualSum)
         setUsername('')
         setAmount(0)
+        setToasty({
+          open: true,
+          text: "Transação efetuada com sucesso!",
+          severity: "success"
+        })
       break;
       case 400: 
         setHasAmountError({
