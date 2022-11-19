@@ -68,9 +68,11 @@ const SignUp = () => {
 
   async function handleSubmit(event: SyntheticEvent) {
     event.preventDefault()
+    
+    const preventMultiplesUsersWithSameUsername = username.toLowerCase()
 
     await api.post('/users/create', {
-      username,
+      username: preventMultiplesUsersWithSameUsername,
       password
     }).then(res => {
       router.push('/signin')

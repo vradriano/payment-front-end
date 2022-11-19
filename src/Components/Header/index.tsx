@@ -10,6 +10,7 @@ import { useContext } from "react"
 import { AuthContext } from "../../contexts/AuthContext"
 import { styles } from './styles'
 import Link from 'next/link'
+import { getUserName } from '../../services/user'
 
 export function Header() {
   const { user, isAuthenticated, signOut } = useContext(AuthContext)
@@ -37,7 +38,7 @@ export function Header() {
               ) : (
                 <>
                   <Typography sx={styles.userTitle}>
-                    Bem vindo, {user!.username}
+                    Bem vindo, {getUserName(user!.username)}
                   </Typography>
                     <p>
                     |

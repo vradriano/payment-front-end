@@ -11,7 +11,7 @@ import { useState } from 'react'
 
 interface TransactionsProps {
   id: number;
-  value: string;
+  value: number;
   debitedAccountId: number;
   creditedAccountId: number;
   createdAt: number;
@@ -32,10 +32,16 @@ interface Props {
   transactionsHistoryData: TransactionsProps[];
   userBalance: BalanceProps;
   formattedDates: string[];
+  username: string;
 }
 
-export default function Home({ transactionsHistoryData, userBalance, formattedDates }: Props) {
-  const [transactions, setTransactions] = useState<any | null>(transactionsHistoryData)
+export default function Home({ 
+  transactionsHistoryData, 
+  userBalance, 
+  formattedDates, 
+  username 
+}: Props) {
+  const [transactions, setTransactions] = useState(transactionsHistoryData)
   const [userAmount, setUserAmount] = useState(userBalance.balance)
 
   function handleAddTransactions(newTransaction: TransactionsProps) {
@@ -51,8 +57,6 @@ export default function Home({ transactionsHistoryData, userBalance, formattedDa
     const historiesFormatted = transactionsHistoryData!.filter((transaction: TransactionsProps) => {
       return filtersParams.filterType !== "Default" ? filtersParams.filterType === transaction.type : transaction
     })
-
-    console.log(historiesFormatted, typeof historiesFormatted)
 
     const dateFormatted = historiesFormatted!.filter((history: any) => {
       return filtersParams.filterDate !== "Default" 
@@ -88,6 +92,7 @@ export default function Home({ transactionsHistoryData, userBalance, formattedDa
                 </Typography>
 
                 <HistoryComponent
+                  username={username}
                   transactionsHistoryData={transactions}  
                 />
               </Box>
@@ -95,7 +100,6 @@ export default function Home({ transactionsHistoryData, userBalance, formattedDa
 
             <Grid item xs={12} md={3}> 
               <TotalBalance 
-                onHandleSumTransactions={handleSumTransactions}
                 userBalance={userAmount} 
               />
 
@@ -135,7 +139,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     }, 
   })
 
-  const { id } = userSession.data
+  const { id, username } = userSession.data
 
   const getTransactions = await api.get(`/${id}/transactions`, {
     headers: {
@@ -165,6 +169,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 
   return {
     props: {
+      username,
       transactionsHistoryData: transactionsFormatted,
       userBalance: getBalance.data,
       formattedDates: removeDuplicatesDate

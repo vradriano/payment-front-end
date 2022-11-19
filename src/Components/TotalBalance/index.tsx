@@ -9,7 +9,6 @@ import { styles } from './styles'
 
 export function TotalBalance({ userBalance }: any) {
 
-
   return (
     <Grid item> 
       <Card sx={styles.cardContainer} elevation={5}>

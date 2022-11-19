@@ -5,7 +5,8 @@ import {
   FormControl,
   FormHelperText,
   Input,
-  Button
+  Button,
+  InputAdornment
 } from '@mui/material'
 import useToasty from "../../contexts/Toasty"
 import { api } from '../../services/axios'
@@ -22,7 +23,7 @@ interface ErrorProps {
 
 interface TransactionsProps {
   id: number;
-  value: string;
+  value: number;
   debitedAccountId: number;
   creditedAccountId: number;
   createdAt: number;
@@ -70,17 +71,6 @@ export function TransferComponent({
 
   function handleResponseError(errorStatus: number) {
     switch(errorStatus) {
-      case 200:
-        const actualSum = actualBalance! - amount
-        onHandleSumTransactions(actualSum)
-        setUsername('')
-        setAmount(0)
-        setToasty({
-          open: true,
-          text: "Transação efetuada com sucesso!",
-          severity: "success"
-        })
-      break;
       case 400: 
         setHasAmountError({
           type: 'insufficientFundsToTransfer',
@@ -101,6 +91,8 @@ export function TransferComponent({
   }
   
   async function handleTransferAmount(event: SyntheticEvent) {
+    const usernameFormattedToTransfer = username.toLowerCase()
+
     if(username === user?.username) {
       setHasAmountError({
         type: 'sameAccount',
@@ -123,7 +115,7 @@ export function TransferComponent({
 
     await api.post('/transactions/create', {
       userDebited: user!.username,
-      userCredited: username,
+      userCredited: usernameFormattedToTransfer,
       value: amount
     }, {
     headers: {
@@ -143,6 +135,12 @@ export function TransferComponent({
         value,
         createdAt,
         type: 'Cash-Out'
+      })
+
+      setToasty({
+        open: true,
+        text: "Transação efetuada com sucesso!",
+        severity: "success"
       })
 
       if(hasAmountError) {
@@ -190,6 +188,7 @@ export function TransferComponent({
             value={amount}
             sx={styles.inputStyles}
             onChange={e => handleChangeAmount(parseInt(e.target.value))}
+            startAdornment={<InputAdornment position="start">R$</InputAdornment>}
           />
           <FormHelperText sx={styles.helperText}>
             {hasAmountError.error && hasAmountError.type === 'insufficientFundsToTransfer' ? hasAmountError.message : null}

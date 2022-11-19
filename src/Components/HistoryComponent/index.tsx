@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useContext } from 'react';
 import {
   Table,
   TableBody,
@@ -43,10 +43,12 @@ interface TransactionsProps {
 }
 
 interface Props {
+  username: string;
   transactionsHistoryData: TransactionsProps[]
 }
 
-export function HistoryComponent({ transactionsHistoryData }: Props) {
+export function HistoryComponent({ transactionsHistoryData, username }: Props) {
+
 
   return (
     <TableContainer sx={{ mt: 3}} component={Paper}>
@@ -69,7 +71,7 @@ export function HistoryComponent({ transactionsHistoryData }: Props) {
                 <>
                   <StyledTableRow>
                     <StyledTableCell component="th" scope="row">
-                      vradriano
+                      {username}
                     </StyledTableCell>
                     <StyledTableCell align="right">{transaction.debitedAccountId}</StyledTableCell>
                     <StyledTableCell align="right">{transaction.creditedAccountId}</StyledTableCell>

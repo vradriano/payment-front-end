@@ -29,8 +29,10 @@ const SignIn = () => {
   async function handleLogin(event: SyntheticEvent) {
     event.preventDefault()
 
+    const usernameFormattedToLogin = username.toLowerCase()
+
     const data = {
-      username,
+      username: usernameFormattedToLogin,
       password
     }
 
