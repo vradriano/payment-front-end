@@ -18,6 +18,13 @@ export const styles = {
     fontSize: 16, 
     color: theme.palette.primary.light 
   },
+  firstLink: {
+    textTransform: 'none',
+    mr: 2,
+    fontWeight: 600, 
+    fontSize: 16, 
+    color: theme.palette.primary.light 
+  },
   redirectLink: { 
     textTransform: 'none',
     ml: 1, 

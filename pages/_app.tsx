@@ -1,3 +1,4 @@
+import React from 'react'
 import type { AppProps } from 'next/app'
 import { ToastyProvider } from '../src/contexts/Toasty'
 import { AuthProvider } from '../src/contexts/AuthContext'

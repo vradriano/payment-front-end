@@ -1,18 +1,17 @@
-import { SyntheticEvent, useState } from "react"
+import React, { useState, FormEvent } from "react"
+import { GetServerSidePropsContext } from "next"
 import { useRouter } from 'next/router'
+import { ButtonComponent } from '../../src/components/ButtonComponent'
+import { InputComponent } from "../../src/components/InputComponent"
 import { api } from "../../src/services/axios"
 import { Header } from "../../src/components/Header"
 import { styles } from "./styles"
+import nookies from 'nookies'
 import validator from 'validator'
 import {
-  Button,
   Container,
   Box,
   Paper,
-  FormControl,
-  Input,
-  InputLabel,
-  FormHelperText,
   Typography
 } from "@mui/material"
 
@@ -66,7 +65,7 @@ const SignUp = () => {
     setPassword(password)
   }
 
-  async function handleSubmit(event: SyntheticEvent) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     
     const preventMultiplesUsersWithSameUsername = username.toLowerCase()
@@ -107,52 +106,32 @@ const SignUp = () => {
           </Typography>
           
           <form onSubmit={handleSubmit}>          
-            <FormControl fullWidth>
-              <InputLabel
-                sx={styles.inputText}
-              >
-                Username
-              </InputLabel>
-              <Input
-                name="username"
-                type="text"
-                value={username}
-                onChange={(e) => handleChangeUsername(e.target.value)}
-                sx={styles.inputStyles}
-              />
-              <FormHelperText sx={styles.helperText}>
-                {hasError.error && hasError.type === 'username' ? hasError.message : null}
-              </FormHelperText>
-            </FormControl>
+            <InputComponent
+              name="username"
+              type="text"
+              title="Username"
+              value={username}
+              onChange={(e) => handleChangeUsername(e.target.value)}
+              hasError={
+                hasError.error && hasError.type === 'username' ? hasError.message : null
+              }
+            />
 
-            <FormControl fullWidth sx={{ mt: 4 }}>
-              <InputLabel
-                sx={styles.inputText}
-              >
-                Senha
-              </InputLabel>
-              <Input
-                name="password"
-                type="password"
-                value={password}
-                onChange={(e) => handleChangePassword(e.target.value)}
-                sx={styles.inputStyles}
-              />
-              <FormHelperText sx={styles.helperText}>
-                {hasError.error && hasError.type === 'weakPassword' ? hasError.message : null}
-              </FormHelperText>
-            </FormControl>
+            <InputComponent
+              title="Senha"
+              name="password"
+              type="password"
+              value={password}
+              onChange={(e) => handleChangePassword(e.target.value)}
+              hasError={
+                hasError.error && hasError.type === 'weakPassword' ? hasError.message : null
+              }
+            />
 
-            <Button
-              fullWidth
-              disabled={isUserHasLessThan3Character || hasError.error || !password}
-              type="submit"
-              variant="contained"
-              color="primary"
-              sx={styles.buttonStyles}
-            >
-              Cadastrar
-            </Button>
+            <ButtonComponent 
+              isDisabled={isUserHasLessThan3Character || hasError.error || !password}
+              text="Cadastrar"
+            />
           </form>
         </Paper>
       </Container>
@@ -161,3 +140,22 @@ const SignUp = () => {
 }
 
 export default SignUp
+
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const cookies = nookies.get(ctx)
+  const token = cookies['auth.token']
+
+  if(token) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      }
+    }
+  }
+
+  return {
+    props: {}
+  }
+}

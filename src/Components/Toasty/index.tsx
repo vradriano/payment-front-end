@@ -2,7 +2,7 @@ import {
   Snackbar,
   Alert 
 } from '@mui/material'
-import { SyntheticEvent } from 'react';
+import React, { SyntheticEvent } from 'react';
 
 type ToastyProps = {
   open: boolean;

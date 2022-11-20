@@ -6,14 +6,14 @@ import {
   FormHelperText,
   Input,
   Button,
-  InputAdornment
 } from '@mui/material'
-import useToasty from "../../contexts/Toasty"
+import React, { SyntheticEvent, useState, useContext } from 'react'
 import { api } from '../../services/axios'
 import { AuthContext } from "../../contexts/AuthContext"
-import { SyntheticEvent, useState, useContext } from 'react'
 import { parseCookies } from 'nookies'
 import { styles } from './styles'
+import { NgCashAmountFormat } from '../../services/ngCashAmountFormat'
+import useToasty from "../../contexts/Toasty"
 
 interface ErrorProps {
   type: string;
@@ -28,6 +28,12 @@ interface TransactionsProps {
   creditedAccountId: number;
   createdAt: number;
   type: 'Cash-In' | 'Cash-Out'
+}
+
+interface ValuesProps {
+  floatValue: number;
+  formattedValue: string;
+  value: string;
 }
 
 interface Props {
@@ -57,7 +63,7 @@ export function TransferComponent({
     setUsername(username)
   }
 
-  function handleChangeAmount(amount: number) {
+  function handleChangeAmount(values: ValuesProps) {
     if(hasAmountError.type === 'insufficientFundsToTransfer') {
       setHasAmountError({
         type: '',
@@ -66,7 +72,9 @@ export function TransferComponent({
       })
     }
 
-    setAmount(amount)
+    let formattedValue = values.floatValue / 100
+
+    setAmount(formattedValue)
   }
 
   function handleResponseError(errorStatus: number) {
@@ -92,8 +100,9 @@ export function TransferComponent({
   
   async function handleTransferAmount(event: SyntheticEvent) {
     const usernameFormattedToTransfer = username.toLowerCase()
+    const usernameFormattedSender = user?.username.toLowerCase()
 
-    if(username === user?.username) {
+    if(usernameFormattedToTransfer === usernameFormattedSender) {
       setHasAmountError({
         type: 'sameAccount',
         error: true,
@@ -182,14 +191,14 @@ export function TransferComponent({
           >
             Valor a ser transferido:
           </Typography>
-          <Input
-            name="amount"
-            type="number"
+
+          <NgCashAmountFormat 
+            key="amount"
             value={amount}
-            sx={styles.inputStyles}
-            onChange={e => handleChangeAmount(parseInt(e.target.value))}
-            startAdornment={<InputAdornment position="start">R$</InputAdornment>}
+            customInput={Input}
+            onValueChange={(values: any) => handleChangeAmount(values)}
           />
+
           <FormHelperText sx={styles.helperText}>
             {hasAmountError.error && hasAmountError.type === 'insufficientFundsToTransfer' ? hasAmountError.message : null}
           </FormHelperText>

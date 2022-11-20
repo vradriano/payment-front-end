@@ -1,5 +1,5 @@
 const getUserName = (userName: string) => {
-  userName = userName.charAt(0).toUpperCase() + userName.slice(1)
+  userName = userName ? userName?.charAt(0).toUpperCase() + userName?.slice(1) : "..."
 
   return userName
 }

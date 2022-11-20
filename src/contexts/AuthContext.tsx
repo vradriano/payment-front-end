@@ -1,5 +1,5 @@
-import Router from 'next/router'
-import { createContext, ReactNode, useState, useEffect } from "react";
+import React, { createContext, ReactNode, useState, useEffect } from "react";
+import { useRouter } from 'next/router'
 import { setCookie, parseCookies, destroyCookie } from 'nookies'
 import { api } from "../services/axios";
 
@@ -27,6 +27,7 @@ export const AuthContext = createContext({} as AuthContextData)
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User>()
+  const router = useRouter()
   const isAuthenticated = !!user;
 
   useEffect(() => {
@@ -44,7 +45,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       .catch(() => {
         destroyCookie(undefined, 'auth.token')
 
-        Router.push('/')
+        router.push('/')
       })
     }
   }, [])
@@ -69,9 +70,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       api.defaults.headers['Authorization'] = `Bearer ${token}`
 
-      Router.push('/')
-    } catch (err) {
-      console.log(err)
+      router.push('/')
+    } catch (err: any) {
+      throw new Error(err)
     }
   }
 
@@ -79,7 +80,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   async function signOut() {
     destroyCookie(undefined, 'auth.token')
     
-    Router.reload()
+    router.reload()
   }
   
   

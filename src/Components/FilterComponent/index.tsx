@@ -8,7 +8,7 @@ import {
   Button,
   Card
 } from '@mui/material'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { styles } from './styles' 
 
 interface FilterProps {
@@ -62,22 +62,26 @@ export function FilterComponent({ onHandleFilterByCategories, getAllHistoriesDat
 
           <FormControl fullWidth sx={{ mt: 3 }}>
             <Typography>Data da transação</Typography>
-            <Select
-              value={dateFilter}
-              onChange={(e) => handleAddDateFilter(e.target.value)}
-              name="transactionType"
-              fullWidth
-            > 
-              <MenuItem value="Default">Mostrar todos</MenuItem>
-              {
-                getAllHistoriesDate.map((date: string ) => {
+            {
+              getAllHistoriesDate[0] && (  
+                <Select
+                  value={dateFilter}
+                  onChange={(e) => handleAddDateFilter(e.target.value)}
+                  name="transactionType"
+                  fullWidth
+                >                             
+                  <MenuItem id='dateButton' value="Default">Mostrar todos</MenuItem> 
+                  {
+                    getAllHistoriesDate.map((date: string ) => {
 
-                  return (
-                    <MenuItem key={date} value={date}>{date}</MenuItem>
-                  )
-                })
-              }
-            </Select>
+                      return (
+                        <MenuItem key={date} value={date}>{date}</MenuItem>
+                      )
+                    })
+                  }
+                </Select>
+              )
+            }
           </FormControl>
 
           <Button 

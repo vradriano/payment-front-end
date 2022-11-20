@@ -1,20 +1,22 @@
 import {
-  Button,
   Container,
   Box,
   Paper,
-  FormControl,
-  Input,
-  InputLabel,
   Typography
 } from "@mui/material"
-import { useState, SyntheticEvent, useContext } from "react"
+import React, { useState, SyntheticEvent, useContext } from "react"
+import useToasty from '../../src/contexts/Toasty'
+import { GetServerSidePropsContext } from "next"
 import { AuthContext } from '../../src/contexts/AuthContext'
 import { Header } from "../../src/components/Header"
+import { InputComponent } from "../../src/components/InputComponent"
+import { ButtonComponent } from "../../src/components/ButtonComponent"
 import { styles } from "./styles"
+import nookies from 'nookies'
 
 const SignIn = () => {
   const { signIn } = useContext(AuthContext)
+  const { setToasty } = useToasty()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -36,7 +38,15 @@ const SignIn = () => {
       password
     }
 
-    signIn(data)
+    try {
+      await signIn(data)
+    } catch {
+      setToasty({
+        open: true,
+        text: 'Usuário ou senha inválido!',
+        severity: 'error'
+      })
+    }
   }
 
   return (
@@ -56,44 +66,26 @@ const SignIn = () => {
           </Typography>
 
           <form onSubmit={handleLogin}>
-            <FormControl fullWidth>
-              <InputLabel
-                sx={styles.inputText}
-              >
-                Username
-              </InputLabel>
-              <Input
-                name="username"
-                type="text"
-                onChange={(e) => handleChangeUsername(e.target.value)}
-                sx={styles.inputStyles}
-              />
-            </FormControl>
+            <InputComponent
+              name="username"
+              type="text"
+              title="Username"
+              value={username}
+              onChange={(e) => handleChangeUsername(e.target.value)}
+            />
 
-            <FormControl fullWidth sx={{ mt: 4 }}>
-              <InputLabel
-                sx={styles.inputText}
-              >
-                Senha
-              </InputLabel>
-              <Input
-                name="password"
-                type="password"
-                onChange={(e) => handleChangePassword(e.target.value)}
-                sx={styles.inputStyles}
-              />
-            </FormControl>
+            <InputComponent
+              name="password"
+              type="password"
+              title="Senha"
+              value={password}
+              onChange={(e) => handleChangePassword(e.target.value)} 
+            />
 
-            <Button
-              fullWidth
-              disabled={!username}
-              type="submit"
-              variant="contained"
-              color="primary"
-              sx={styles.buttonStyles}
-            >
-              Entrar
-            </Button>
+            <ButtonComponent 
+              isDisabled={!username}
+              text="Entrar"
+            />    
           </form>
         </Paper>
       </Container>
@@ -102,3 +94,23 @@ const SignIn = () => {
 }
 
 export default SignIn
+
+
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const cookies = nookies.get(ctx)
+  const token = cookies['auth.token']
+
+  if(token) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      }
+    }
+  }
+
+  return {
+    props: {}
+  }
+}

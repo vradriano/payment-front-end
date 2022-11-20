@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import React from 'react';
 import {
   Table,
   TableBody,
@@ -65,21 +65,19 @@ export function HistoryComponent({ transactionsHistoryData, username }: Props) {
         </TableHead>
         <TableBody>
           {
-            transactionsHistoryData.map((transaction: TransactionsProps) => {
+            transactionsHistoryData.length && transactionsHistoryData.map((transaction: TransactionsProps) => {
 
               return (
-                <>
-                  <StyledTableRow>
-                    <StyledTableCell component="th" scope="row">
-                      {username}
-                    </StyledTableCell>
-                    <StyledTableCell align="right">{transaction.debitedAccountId}</StyledTableCell>
-                    <StyledTableCell align="right">{transaction.creditedAccountId}</StyledTableCell>
-                    <StyledTableCell align="right">{CurrencyFormat(transaction.value)}</StyledTableCell>
-                    <StyledTableCell align="right">{transaction.type}</StyledTableCell>
-                    <StyledTableCell align="right">{DateFormat(transaction.createdAt)}</StyledTableCell>
-                  </StyledTableRow>
-                </>
+                <StyledTableRow key={transaction.id}>
+                  <StyledTableCell component="th" scope="row">
+                    {username}
+                  </StyledTableCell>
+                  <StyledTableCell align="right">{transaction.debitedAccountId}</StyledTableCell>
+                  <StyledTableCell align="right">{transaction.creditedAccountId}</StyledTableCell>
+                  <StyledTableCell align="right">{CurrencyFormat(transaction.value)}</StyledTableCell>
+                  <StyledTableCell align="right">{transaction.type}</StyledTableCell>
+                  <StyledTableCell align="right">{DateFormat(transaction.createdAt)}</StyledTableCell>
+                </StyledTableRow>
               )
             })
           }
